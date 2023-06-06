@@ -59,8 +59,12 @@
         body {
             display: flex;
             justify-content: center;
+            align-items: center;
             height: 100%;
             width: 100%;
+            background-image: url("https://images.pexels.com/photos/1525041/pexels-photo-1525041.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2");
+            background-size: cover; /* 調整圖片大小以填滿背景 */
+            background-repeat: no-repeat; /* 避免重複平鋪 */
         }
 
         .options {
@@ -94,6 +98,7 @@
 
         table{
             border-collapse:collapse ;
+            background-color: #f1f1f1;
         }
 
         #table_class{
@@ -180,10 +185,10 @@
 <!--主體-->
 <div>
     <div>
-        <h1>學期成績查詢</h1>
+        <h1 style="font-size: 50px ;color: darkgreen">學期成績查詢</h1>
     </div>
-    <div style="width: 40%">
-        <table>
+    <div>
+        <table style="background-color: #f1f1f1">
         <?php
         $sql = "SELECT student_id AS id , student_name AS name FROM student WHERE account='$account'";
         $result = $conn->query($sql);
