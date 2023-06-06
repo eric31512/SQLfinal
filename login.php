@@ -25,6 +25,7 @@
         .mainContent{
             text-align: center;
             background-color: #f1f1f1;
+            padding: 10px;
         }
         #error-message{
             text-align: center;

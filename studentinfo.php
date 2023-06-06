@@ -35,8 +35,12 @@
         body {
             display: flex;
             justify-content: center;
+            align-items: center;
             height: 100%;
             width: 100%;
+            background-image: url("https://images.pexels.com/photos/1525041/pexels-photo-1525041.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2");
+            background-size: cover; /* 調整圖片大小以填滿背景 */
+            background-repeat: no-repeat; /* 避免重複平鋪 */
         }
 
         .options {
@@ -71,6 +75,8 @@
         .studentINFO{
             border-collapse: separate;
             border-spacing:30px 0px;
+            background-color: #f1f1f1;
+            padding: 10px;
             width: 100%;
         }
         .studentINFO tr:first-child,
@@ -151,11 +157,11 @@
 <!--主體-->
 <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;width: 100%;">
     <div>
-        <h1>個人學籍資料</h1>
+        <h1 style="font-size: 50px ;color: darkgreen">個人學籍資料</h1>
     </div>
 
     <div style="align-items: flex-start;width: 60%">
-        <h3>學生基本資料</h3>
+        <h3 style="background-color: #f1f1f1 ;display: inline-block; padding: 5px">學生基本資料</h3>
     </div>
     <div style="width: 60%">
         <?php
@@ -188,7 +194,7 @@
     </div>
     <br><br>
     <div style="align-items: flex-start;width: 60%">
-        <h3>緊急聯絡人資料</h3>
+        <h3 style="background-color: #f1f1f1 ;display: inline-block; padding: 5px">緊急聯絡人資料</h3>
     </div>
     <div style="width: 60%">
         <?php

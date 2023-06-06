@@ -98,6 +98,7 @@
 
         table{
             border-collapse:collapse ;
+            border: 2px solid darkgreen;
             background-color: #f1f1f1;
         }
 
