@@ -21,10 +21,6 @@
         if ($conn->connect_error) {
             die("connect fail： " . $conn->connect_error);
         }
-        $account = $_GET['username'];
-        if(isset($_GET['currentValue']) ){
-            $account = $_GET['currentValue'];
-        }
     ?>
     <?php
     // 檢查是否有表單提交
@@ -32,6 +28,7 @@
         if (isset($_POST['selectedYear']) && isset($_POST['selectedSemester'])) {
             $year = $_POST['selectedYear'];
             $semester = $_POST['selectedSemester'];
+            $account = $_POST['username'];
             //取得資料庫內容
             $sql1 = "SELECT S.courseid ,C.Cdepartment,C.Cname,C.reqORele,C.credits, T.name ,S.grade
                         FROM choosecourse S ,course C, teacher T 
@@ -71,7 +68,7 @@
             left: 0;
             top: 0;
             height: 100vh;
-            width: 180px;
+            width: 140px;
             background-color: #f1f1f1;
             padding: 10px;
             transition: transform 0.3s ease-in-out;
@@ -131,7 +128,7 @@
 
             button.addEventListener('click', function() {
                 if (!isMoved) {
-                    button.style.transform = 'translateX(200px)'; // 移動到目標位置
+                    button.style.transform = 'translateX(160px)'; // 移動到目標位置
                 } else {
                     button.style.transform = 'translateX(0)'; // 返回原位
                 }
@@ -142,20 +139,41 @@
 </head>
 <body>
 
-<button class="logout" onclick="redirectToAnotherPage()">登出</button>
+<button class="logout" onclick="redirectToAnotherPage()" style="background-color: darkgoldenrod ;width: 80px ;height: 60px ">登出</button>
 
 <!--選項列表-->
-<button id="showOptionsBtn" class="button">切換網頁</button>
+<button id="showOptionsBtn" class="button" style="background-color: darkgoldenrod ;width: 80px ;height: 60px">切換網頁</button>
 <script>
     function redirectToAnotherPage() {
         window.location.href = "login.php"; // 將這裡的網址替換為您想要跳轉到的頁面的網址
     }
 </script>
-<div class="options">
-    <ul>
-        <li>學生成績查詢</li>
-        <li>學生基本資料</li>
-    </ul>
+<div class="options" style="justify-content: flex-start ; align-items: center">
+    <br>
+        <?php
+        $currentYear = date('Y')-1911;
+        $currentMonth = date('M');
+        $currentMonth = date('m', strtotime($currentMonth));
+        if($currentMonth<8 && $currentMonth>1){
+            $currentSemester = "下學期";
+            $currentYear--;
+        }else{
+            $currentSemester = "上學期";
+        }
+        ?>
+        <form method="POST" action="student.php">
+            <input type="hidden" name="username" value=<?php echo $account?> >
+            <input type="hidden" name="selectedYear" value=<?php echo $currentYear ?> >
+            <input type="hidden" name="selectedSemester" value=<?php echo $currentSemester?> >
+            <input type="submit" value="學生成績查詢" style="width: 130px ;height: 60px ;background-color: darkgoldenrod">
+        </form>
+        <br>
+        <form method="POST" action="studentinfo.php">
+            <input type="hidden" name="username" value=<?php echo $account?> >
+            <input type="hidden" name="selectedYear" value=<?php echo  $currentYear?> >
+            <input type="hidden" name="selectedSemester" value=<?php echo $currentSemester?> >
+            <input type="submit" value="學生基本資料" style="width: 130px ;height: 60px ;background-color: darkgoldenrod">
+        </form>
 </div>
 <!--選項列表-->
 
@@ -178,10 +196,10 @@
         }
         ?>
 
-        <form method="POST" action="">
+        <form method="POST" action="student.php">
             <tr>
             <td><label for="year">學年:</label></td>
-            <td><select id="year" name="selectedYear">
+            <td><select id="year" name="selectedYear" style="width: 100% ;height: 100%">
                 <?php
                 $currentYear = date('Y')-1911;
                 $startYear = $currentYear - 5;
@@ -196,7 +214,7 @@
                 ?>
             </select></td>
             <td><label for="semester">學期:</label></td>
-            <td><select id="semester" name="selectedSemester">
+            <td><select id="semester" name="selectedSemester" style="width: 100% ;height: 100%">
                 <option value="上學期" <?php if(isset($_POST['selectedSemester']) && $_POST['selectedSemester'] === '上學期') echo 'selected'; ?>>上學期</option>
                 <option value="下學期" <?php if(isset($_POST['selectedSemester']) && $_POST['selectedSemester'] === '下學期') echo 'selected'; ?>>下學期</option>
             </select></td>
@@ -217,10 +235,10 @@
             ?>
             <tr>
             </table>
-        <br>
-            <input type="submit" value="查詢">
+            <br>
+            <input type="hidden" name="username" value=<?php echo $account ?>>
+            <input type="submit" value="查詢" style="height: 40px ;width: 60px ;background-color: darkgoldenrod">
         </form>
-
     </div>
     <br>
     <div>

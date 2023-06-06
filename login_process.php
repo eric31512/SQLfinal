@@ -25,14 +25,29 @@ $result_stu = $conn->query($sqlstudent);
 $sqlteacher = "SELECT * FROM teacher WHERE account='$username' AND password='$password'";
 $result_tea = $conn->query($sqlteacher);
 
+$currentYear = date('Y')-1911;
+$currentMonth = date('M');
+$currentMonth = date('m', strtotime($currentMonth));
+if($currentMonth<8 && $currentMonth>1){
+    $currentSemester = "下學期";
+    $currentYear--;
+}else{
+    $currentSemester = "上學期";
+}
+
 if ($result_stu->num_rows == 1) {
     // 登入成功，建立 Session
     $_SESSION['username'] = $username;
-    header("Location: student.php?username=" . urlencode($username));
+    echo '<form id="studentForm" method="POST" action="student.php">';
+    echo '<input type="hidden" name="username" value=' . $username .'>';
+    echo '<input type="hidden" name="selectedYear" value=' . $currentYear .'>';
+    echo '<input type="hidden" name="selectedSemester" value=' . $currentSemester .'>';
+    echo '</form>';
+    echo '<script>document.getElementById("studentForm").submit();</script>';
 }
 else if ($result_tea->num_rows == 1) {// 登入成功，建立 Session
     $_SESSION['username'] = $username;
-    header("Location: teacher.php?username=" . urlencode($username));
+    header("Location:teacher.php?username=" . urlencode($username));
     // 跳轉到登入後的頁面
 }
 else{

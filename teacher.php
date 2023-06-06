@@ -75,7 +75,7 @@
 
 
 <!--右上角登出-->
-<button class="logout" onclick="redirectToAnotherPage()">登出</button>
+<button class="logout" onclick="redirectToAnotherPage()" style="height: 40px ;width: 60px ;background-color: darkgoldenrod">登出</button>
 <script>
     function redirectToAnotherPage() {
         window.location.href = "login.php"; // 將這裡的網址替換為您想要跳轉到的頁面的網址
