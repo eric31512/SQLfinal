@@ -68,30 +68,20 @@
             right: 0;
         }
 
-        table{
-            border-collapse:collapse ;
-        }
-
-        #table_class{
-            width: 90%;
-        }
-
-        th, td {
-            border: 1px solid black; /* 設置邊框 */
-            padding: 8px; /* 設置內邊距 */
-            text-align: center; /* 文字居中對齊 */
-            width: auto; /* 將每個欄位的寬度設置為自動調整 */
-        }
-
-
-
-        div {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+        .studentINFO{
+            border-collapse: separate;
+            border-spacing:30px 0px;
             width: 100%;
         }
+
+        .studentINFO tr:nth-child(odd) td{
+            border: none;
+        }
+
+        .studentINFO tr:nth-child(even) td{
+            border: 1px solid black;
+        }
+
 
 
 
@@ -154,12 +144,21 @@
 <!--選項列表-->
 
 <!--主體-->
-<div>
+<div style="display: flex;flex-direction: column;justify-content: center;align-items: center;width: 100%;">
     <div>
         <h1>個人學籍資料</h1>
     </div>
-    <div>
+    <div style="align-items: flex-start;width: 60%">
         <h3>學生基本資料</h3>
+    </div>
+    <div style="width: 60%">
+        <?php
+
+        ?>
+        <table class="studentINFO">
+            <tr><td>學號</td><td>身分證</td></tr>
+            <tr><td>110916004</td><td>A131752763</td></tr>
+        </table>
     </div>
 
 </div>
