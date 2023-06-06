@@ -26,6 +26,28 @@
             $account = $_GET['currentValue'];
         }
     ?>
+    <?php
+    // 檢查是否有表單提交
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (isset($_POST['selectedYear']) && isset($_POST['selectedSemester'])) {
+            $year = $_POST['selectedYear'];
+            $semester = $_POST['selectedSemester'];
+            //取得資料庫內容
+            $sql1 = "SELECT S.courseid ,C.Cdepartment,C.Cname,C.reqORele,C.credits, T.name ,S.grade
+                        FROM choosecourse S ,course C, teacher T 
+                        WHERE S.studentid='$account' AND C.year='$year' AND C.semester='$semester' AND S.courseid = C.courseid 
+                        AND C.teacherSSN = T.SSN ";
+
+            $sql2 = "SELECT C.credits
+                        FROM choosecourse S ,course C, teacher T 
+                        WHERE S.studentid='$account' AND C.year='$year' AND C.semester='$semester' AND S.courseid = C.courseid 
+                        AND C.teacherSSN = T.SSN ";
+
+            $YSresult = $conn->query($sql1);
+            $Search = $conn->query($sql2);
+        }
+    }
+    ?>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -40,22 +62,10 @@
         body {
             display: flex;
             justify-content: center;
-            align-items: flex-start;
             height: 100%;
             width: 100%;
         }
-        .main{
-            width: 100%;
-        }
-        .content{
-            text-align: center;
-            width: 100%;
 
-        }
-        .maincontent{
-            text-align: center;
-            width: 100%;
-        }
         .options {
             position: fixed;
             left: 0;
@@ -78,21 +88,39 @@
             left: 0;
             transition: transform 0.3s ease-in-out;
         }
+
         .logout{
             position: fixed;
             top: 0;
             right: 0;
         }
 
-        table {
-            width: 100%; /* 表格寬度佔滿父容器 */
-            border-collapse: collapse; /* 合併邊框 */
+        table{
+            border-collapse:collapse ;
         }
+
+        #table_class{
+            width: 90%;
+        }
+
         th, td {
             border: 1px solid black; /* 設置邊框 */
             padding: 8px; /* 設置內邊距 */
             text-align: center; /* 文字居中對齊 */
+            width: auto; /* 將每個欄位的寬度設置為自動調整 */
         }
+
+
+
+        div {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+
 
     </style>
     <!-- 設定button是否被按到-->
@@ -113,8 +141,11 @@
     </script>
 </head>
 <body>
-<button id="showOptionsBtn" class="button">切換網頁</button>
+
 <button class="logout" onclick="redirectToAnotherPage()">登出</button>
+
+<!--選項列表-->
+<button id="showOptionsBtn" class="button">切換網頁</button>
 <script>
     function redirectToAnotherPage() {
         window.location.href = "login.php"; // 將這裡的網址替換為您想要跳轉到的頁面的網址
@@ -126,60 +157,35 @@
         <li>學生基本資料</li>
     </ul>
 </div>
-<div class="main">
-    <div class="content">
+<!--選項列表-->
+
+<!--主體-->
+<div>
+    <div>
         <h1>學期成績查詢</h1>
     </div>
-    <div class="maincontent">
-
+    <div style="width: 40%">
+        <table>
         <?php
-        $sql = "SELECT * FROM student WHERE account='$account'";
+        $sql = "SELECT student_id AS id , student_name AS name FROM student WHERE account='$account'";
         $result = $conn->query($sql);
-
         if ($result->num_rows > 0) {
-            //
-            while ($row = $result->fetch_assoc()) {
-                //
-                echo "學號: " . $row["student_id"] . " 姓名: " . $row["student_name"] . "<br>" ;
-            }
-        } else {
-            echo "没有结果";
+            $row = $result->fetch_assoc();
+            echo "<tr>";
+            echo "<td style='width: 20%'>學號:</td><td style='width: 30%'>" . $row['id'] ."</td>";
+            echo "<td style='width: 20%'>姓名:</td><td style='width: 30%'>" . $row['name'] ."</td>";
+            echo "</tr>";
         }
         ?>
-        <!-- 確認資料庫連線-->
 
-        <br>
-        <?php
-        // 預設的年份和學期
-        $defaultYear = "2022";
-        $defaultSemester = "上學期";
-
-        // 檢查是否有表單提交
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (isset($_POST['selectedYear']) && isset($_POST['selectedSemester'])) {
-                $year = $_POST['selectedYear'];
-                $semester = $_POST['selectedSemester'];
-
-
-                //取得資料庫內容
-                $sql = "SELECT S.courseid ,C.Cdepartment,C.Cname,C.reqORele,C.credits, T.name ,S.grade
-                        FROM choosecourse S ,course C, teacher T 
-                        WHERE S.studentid='$account' AND C.year='$year' AND C.semester='$semester' AND S.courseid = C.courseid 
-                        AND C.teacherSSN = T.SSN ";
-                $result1 = $conn->query($sql);
-
-
-            }
-        }
-        ?>
         <form method="POST" action="">
-            <label for="year">學年：</label>
-            <select id="year" name="selectedYear">
+            <tr>
+            <td><label for="year">學年:</label></td>
+            <td><select id="year" name="selectedYear">
                 <?php
                 $currentYear = date('Y')-1911;
                 $startYear = $currentYear - 5;
                 $endYear = $currentYear + 5;
-
                 for ($year = $startYear; $year <= $endYear; $year++) {
                     $selected = '';
                     if (isset($_POST['selectedYear']) && $_POST['selectedYear'] == $year) {
@@ -188,28 +194,50 @@
                     echo "<option value=\"$year\" $selected>$year</option>";
                 }
                 ?>
-            </select>
-            <label for="semester">學期：</label>
-            <select id="semester" name="selectedSemester">
+            </select></td>
+            <td><label for="semester">學期:</label></td>
+            <td><select id="semester" name="selectedSemester">
                 <option value="上學期" <?php if(isset($_POST['selectedSemester']) && $_POST['selectedSemester'] === '上學期') echo 'selected'; ?>>上學期</option>
                 <option value="下學期" <?php if(isset($_POST['selectedSemester']) && $_POST['selectedSemester'] === '下學期') echo 'selected'; ?>>下學期</option>
-            </select>
-            <br><br>
-
+            </select></td>
+            </tr>
+            <?php
+            $totalcredits=0;
+            $count=0;
+            if(isset($Search)){
+                while($row = $Search->fetch_assoc()) {
+                    $totalcredits += $row['credits'];
+                    $count++;
+                }
+            }
+            echo '<td>已選課程總數</td>';
+            echo "<td>" . $count . "</td>";
+            echo '<td>總學分</td>';
+            echo "<td>" . $totalcredits . "</td>";
+            ?>
+            <tr>
+            </table>
+        <br>
             <input type="submit" value="查詢">
         </form>
+
+    </div>
+    <br>
+    <div>
         <?php
         // 如果有查詢結果，顯示在頁面上
-        if (isset($result1)) {
-            echo "<table>";
-            echo "<tr><th>課程編號</th><th>開課系所</th><th>課程名稱</th><th>必修或選修</th><th>成績</th></tr>";
-            while ($row = $result1->fetch_assoc()) {
+        if (isset($YSresult)) {
+            echo "<table id='table_class'>";
+            echo "<tr><th>課程編號</th><th>開課系所</th><th>課程名稱</th><th>必修或選修</th><th>學分</th><th>老師</th><th>成績</th></tr>";
+            while ($row = $YSresult->fetch_assoc()) {
                 echo "<tr>";
-                echo "<td>" . str_pad($row['courseid'], 4, '0', STR_PAD_LEFT)  . "</td>";
-                echo "<td>" . $row['Cdepartment'] . "</td>";
-                echo "<td>" . $row['Cname'] . "</td>";
-                echo "<td>" . $row['reqORele'] . "</td>";
-                echo "<td>" . $row['grade'] . "</td>";
+                echo "<td style='width: 10%'>" . str_pad($row['courseid'], 4, '0', STR_PAD_LEFT)  . "</td>";
+                echo "<td style='width: 20%'>" . $row['Cdepartment'] . "</td>";
+                echo "<td style='width: 20% word-wrap: break-word white-space: normal'>" . $row['Cname'] . "</td>";
+                echo "<td style='width: 10%'>" . $row['reqORele'] . "</td>";
+                echo "<td style='width: 10%'>" . $row['credits'] . "</td>";
+                echo "<td style='width: 20%'>" . $row['name'] . "</td>";
+                echo "<td style='width: 10%'>" . $row['grade'] . "</td>";
                 echo "</tr>";
             }
             echo "</table>";
