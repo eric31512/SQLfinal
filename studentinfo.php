@@ -73,6 +73,10 @@
             border-spacing:30px 0px;
             width: 100%;
         }
+        .studentINFO tr:first-child,
+        .studentINFO tr:last-child {
+            border-spacing: 0;
+        }
 
         .studentINFO tr:nth-child(odd) td{
             border: none;
@@ -80,6 +84,7 @@
 
         .studentINFO tr:nth-child(even) td{
             border: 1px solid black;
+            background-color: darkgoldenrod;
         }
 
 
@@ -148,17 +153,61 @@
     <div>
         <h1>個人學籍資料</h1>
     </div>
+
     <div style="align-items: flex-start;width: 60%">
         <h3>學生基本資料</h3>
     </div>
     <div style="width: 60%">
         <?php
-
+            $sql = "SELECT student_id AS id , SSN AS SSN , student_name AS name , sex AS sex ,
+                    bdate AS birthday , address AS address ,telephone AS telephone ,department AS department
+                    FROM student 
+                    WHERE account='$account'";
+            $result = $conn->query($sql);
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+        }
         ?>
         <table class="studentINFO">
-            <tr><td>學號</td><td>身分證</td></tr>
-            <tr><td>110916004</td><td>A131752763</td></tr>
+            <tr><td style="width: 50%">學號</td><td style="width: 50%">身分證</td></tr>
+            <tr><td><?php echo $row['id'] ?></td><td><?php echo $row['SSN'] ?></td></tr>
+            <tr><td style="width: 50%">姓名</td><td style="width: 50%">性別</td></tr>
+            <tr><td><?php echo $row['name'] ?></td><td><?php echo $row['sex'] ?></td></tr>
+            <tr><td style="width: 50%">生日</td><td style="width: 50%">地址</td></tr>
+            <tr><td><?php
+                    $inputString = $row['birthday'];
+                    $year = substr($inputString, 0, 4);
+                    $month = substr($inputString, 4, 2);
+                    $day = substr($inputString, 6, 2);
+                    $formattedDate = $year . "-" . $month . "-" . $day;
+                    echo $formattedDate ?></td>
+                <td><?php echo $row['address'] ?></td></tr>
+            <tr><td style="width: 50%">電話</td><td style="width: 50%">系所</td></tr>
+            <tr><td><?php echo $row['telephone'] ?></td><td><?php echo $row['department'] ?></td></tr>
         </table>
+    </div>
+    <br><br>
+    <div style="align-items: flex-start;width: 60%">
+        <h3>緊急聯絡人資料</h3>
+    </div>
+    <div style="width: 60%">
+        <?php
+        $sql = "SELECT DISTINCT E.name AS name, E.sex AS sex,E.job AS job, E.address AS address,E.telephone AS telephone,E.relationship AS relationship
+                    FROM student AS S , emergency AS E
+                    WHERE E.Sid='$account'";
+        $result = $conn->query($sql);
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                echo '<table class="studentINFO">';
+                echo '<tr><td style="width: 33%">姓名</td><td style="width: 33%">關係</td><td style="width: 33%">職業</td></tr>';
+                echo '<tr><td>' . $row['name'] . '</td><td>' . $row['relationship'] . '</td><td>' . $row['job'] . '</td></tr>';
+                echo '<tr><td>性別</td><td>行動電話</td><td>地址</td></tr>';
+                echo '<tr><td>' . $row['sex'] . '</td><td>' . $row['telephone'] . '</td><td>' . $row['address'] . '</td></tr>';
+                echo '</table>';
+                echo '<br>';
+            }
+        }
+        ?>
     </div>
 
 </div>

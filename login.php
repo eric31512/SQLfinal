@@ -32,7 +32,7 @@
             <input type="text" id="username" name="username"><br><br>
             <label for="password">密碼：</label>
             <input type="password" id="password" name="password"><br><br>
-            <input type="submit" value="登入" >
+            <input type="submit" value="登入" style="width: 40px ; height: 30px ; background-color: darkgoldenrod">
         </form>
         <H5>教師帳號密碼:身分證字號<BR>學生帳號密碼:學號</H5>
     </div>
