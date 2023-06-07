@@ -26,32 +26,51 @@
         body {
             display: flex;
             justify-content: center;
-            align-items: flex-start;
+            align-items: center;
             height: 100%;
             width: 100%;
+            background-image: url("https://images.pexels.com/photos/1525041/pexels-photo-1525041.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2");
+            background-size: cover; /* 調整圖片大小以填滿背景 */
+            background-repeat: no-repeat; /* 避免重複平鋪 */
         }
 
         .content{
             text-align: center;
+            width: 100%;
         }
 
-        .logout_button{
+        /* 登出*/
+        .logout_button {
             position: fixed;
-            top: 0;
-            right: 0;
+            top: 10px;
+            right: 10px;
+            height: 60px;
+            width: 80px;
+            background-color: darkgoldenrod
         }
 
-        .back_button{
+        /* 返回上一頁*/
+        .back_button {
             position: fixed;
-            top: 0;
-            left: 0;
+            top: 10px;
+            left: 10px;
+            height: 60px;
+            width: 80px;
+            background-color: darkgoldenrod
         }
-        table {
+
+        #studentTable {
             border-collapse: collapse; /* 合併邊框 */
+            border: 2px solid darkgreen;
+            background-color: #f1f1f1;
+            text-align: center;
+            align-items: center;
+            justify-content: center;
+            width: 50%;
         }
 
         th, td {
-            border: 1px solid black; /* 設置邊框 */
+            border: 2px solid darkgreen; /* 設置邊框 */
             padding: 8px; /* 設置內邊距 */
             text-align: center; /* 文字居中對齊 */
         }
@@ -59,6 +78,26 @@
         .input {
             width: 30px;
             height: 30px;
+        }
+
+        .save_button_container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .save_button {
+            height: 60px;
+            width: 80px;
+            background-color: darkgoldenrod;
+        }
+
+        .tablecontent {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
         }
 
     </style>
@@ -89,17 +128,17 @@
 </script>
 <!--右上角登出-->
 
-<div>
+<div style="width: 100%">
     <!--標題-->
     <div class="content">
-        <h1>課程成績管理</h1>
+        <h1 style="font-size: 40px ;color: darkgreen">課程成績管理</h1>
         <?php
         $sql = "SELECT Cname AS name FROM course  WHERE courseid='$course' ";
         $result = $conn->query($sql);
         if ($result->num_rows > 0) {
             //
             while ($row = $result->fetch_assoc()) {
-                echo '<h2>' . $row['name'] .'</h2>';//課程名稱顯示
+                echo '<h2 style="font-size: 20px ;color: black"> ' . $row['name'] .'</h2>';//課程名稱顯示
             }
         } else {
             echo "沒有結果";
@@ -108,7 +147,7 @@
     </div>
 
     <!--學生成績學號顯示-->
-    <div class="content">
+    <div class="tablecontent">
         <?php
         $sql = "SELECT S.student_id AS id,S.student_name AS name,H.grade AS grade
                 FROM course C,choosecourse H ,student S
@@ -117,8 +156,8 @@
         $result = $conn->query($sql);
         if ($result->num_rows > 0) {
             //
-            echo '<form method="POST" action="gradeinput.php">';
-            echo '<table>';
+            echo '<form method="POST" action="gradeinput.php" class="tablecontent">';
+            echo '<table id="studentTable">';
             echo "<tr><th>學號</th><th>學生姓名</th><th>成績</th></tr>";
             while ($row = $result->fetch_assoc()) {
                 echo '<tr>';
@@ -131,7 +170,9 @@
             echo "</table>";
             echo '<br>';
             echo '<input type="hidden" name="course" value=' . $course .'>';
-            echo '<button type="submit">儲存</button>';
+            echo '<div class="save_button_container">';
+            echo '<button type="submit" class="save_button">儲存</button>';
+            echo '</div>';
             echo '</form>';
         }
         ?>
@@ -150,5 +191,3 @@ $conn->close();
 ?>
 </body>
 </html>
-
-
