@@ -168,12 +168,13 @@
                 echo '<td>' . $row['id'] .'</td>';//學生學號
                 echo '<td>' . $row['name'] .'</td>';//學生姓名
                 echo '<td><input class="input" onblur="validateNumericInput(this)  type="text" name="'.$row['id'].'" value="'.$row['grade'].'"></td>';
-
                 echo '</tr>';
             }
             echo "</table>";
             echo '<br>';
             echo '<input type="hidden" name="course" value=' . $course .'>';
+            echo '<input type="hidden" name="selectedYear" value="' . $year . '">';
+            echo '<input type="hidden" name="selectedSemester" value="' . $semester . '">';
             echo '<div class="save_button_container">';
             echo '<button type="submit" class="save_button">儲存</button>';
             echo '</div>';

@@ -17,15 +17,17 @@ if ($conn->connect_error) {
     die("connect fail： " . $conn->connect_error);
 }
 //取的課程id
-$course=$_GET['course'];
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $course = $_POST['course']; // 接收课程ID
+    $course = $_POST['course']; // 接收課程ID
+    $year = $_POST['selectedYear'];
+    $semester = $_POST['selectedSemester'];
 
     // 處理學生成績
     foreach ($_POST as $key => $value) {
         // 忽略course ID和submit
-        if ($key == "course" || $key == "submit") {
+        if ($key == "course" || $key == "submit" ||$key == "selectedYear" ||$key == "selectedSemester") {
             continue;//跳過此循環
         }
 
@@ -35,11 +37,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // 更新学生成绩
         $sql = "UPDATE choosecourse SET grade = '$grade' WHERE courseid = '$course' AND studentid = '$studentId'";
         if ($conn->query($sql) === TRUE) {
-            echo "学生成绩更新成功";
         } else {
-            echo "学生成绩更新失败: " . $conn->error;
+            echo $conn->error;
         }
     }
 }
-header("Location: course.php?id=" . urlencode($course));
+echo '<form id="studentForm" method="POST" action="course.php">';
+echo '<input type="hidden" name="id" value=' . $course .'>';
+echo '<input type="hidden" name="selectedYear" value=' . $year .'>';
+echo '<input type="hidden" name="selectedSemester" value=' . $semester .'>';
+echo '</form>';
+echo '<script>document.getElementById("studentForm").submit();</script>';
 ?>
