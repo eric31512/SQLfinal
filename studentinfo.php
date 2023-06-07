@@ -20,6 +20,8 @@
         die("connect fail： " . $conn->connect_error);
     }
     $account = $_POST['username'];
+    $year = $_POST['selectedYear'];
+    $semester = $_POST['selectedSemester'];
     ?>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -129,28 +131,17 @@
 </script>
 <div class="options" style="justify-content: flex-start">
     <br>
-    <?php
-    $currentYear = date('Y')-1911;
-    $currentMonth = date('M');
-    $currentMonth = date('m', strtotime($currentMonth));
-    if($currentMonth<8 && $currentMonth>1){
-        $currentSemester = "下學期";
-        $currentYear--;
-    }else{
-        $currentSemester = "上學期";
-    }
-    ?>
     <form method="post" action="student.php">
         <input type="hidden" name="username" value=<?php echo $account?> >
-        <input type="hidden" name="selectedYear" value=<?php echo $currentYear ?> >
-        <input type="hidden" name="selectedSemester" value=<?php echo $currentSemester?> >
+        <input type="hidden" name="selectedYear" value=<?php echo $year ?> >
+        <input type="hidden" name="selectedSemester" value=<?php echo $semester?> >
         <input type="submit" value="學生成績查詢" style="width: 130px ;height: 60px ;background-color: darkgoldenrod">
     </form>
     <br>
     <form method="post" action="studentinfo.php">
         <input type="hidden" name="username" value=<?php echo $account?> >
-        <input type="hidden" name="selectedYear" value=<?php echo  $currentYear?> >
-        <input type="hidden" name="selectedSemester" value=<?php echo $currentSemester?> >
+        <input type="hidden" name="selectedYear" value=<?php echo  $year?> >
+        <input type="hidden" name="selectedSemester" value=<?php echo $semester?> >
         <input type="submit" value="學生基本資料" style="width: 130px ;height: 60px ;background-color: darkgoldenrod">
     </form>
 </div>
