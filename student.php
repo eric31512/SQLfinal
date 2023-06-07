@@ -241,7 +241,6 @@
             echo '<td>總學分</td>';
             echo "<td>" . $totalcredits . "</td>";
             ?>
-            <tr>
             </table>
             <br>
             <input type="hidden" name="username" value=<?php echo $account ?>>

@@ -20,7 +20,16 @@
         if ($conn->connect_error) {
             die("connect fail： " . $conn->connect_error);
         }
-        $account = $_GET['username'];
+    ?>
+    <?php
+    // 檢查是否有表單提交
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (isset($_POST['selectedYear']) && isset($_POST['selectedSemester'])) {
+            $year = $_POST['selectedYear'];
+            $semester = $_POST['selectedSemester'];
+            $account = $_POST['username'];
+        }
+    }
     ?>
     <style>
         body {
@@ -83,6 +92,7 @@
 
         /*顯示教師資訊的button*/
 
+        /*顯示教師該學期課程的table*/
         #courseTable{
             border-collapse: collapse; /* 合併邊框 */
             border: 2px solid darkgreen;
@@ -93,11 +103,30 @@
             width: 50%;
         }
 
+        /*查詢學年學期的table*/
+        #serachTable{
+            border-collapse: collapse; /* 合併邊框 */
+            border: 2px solid darkgreen;
+            background-color: #f1f1f1;
+            text-align: center;
+            align-items: center;
+            justify-content: center;
+            width: 30%;
+        }
+
         th, td {
             border: 2px solid darkgreen; /* 設置邊框 */
             padding: 8px; /* 設置內邊距 */
             text-align: center; /* 文字居中對齊 */
             width: auto; /* 將每個欄位的寬度設置為自動調整 */
+        }
+
+        .divContent{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
         }
 
 
@@ -142,10 +171,10 @@
             if (isset($result)) {
                 while ($row = $result->fetch_assoc()) {
                     $inputString = $row['bdate'];
-                    $year = substr($inputString, 0, 4);
+                    $Year = substr($inputString, 0, 4);
                     $month = substr($inputString, 4, 2);
                     $day = substr($inputString, 6, 2);
-                    $formattedDate = $year . "/" . $month . "/" . $day;
+                    $formattedDate = $Year . "/" . $month . "/" . $day;
                     echo "<tr>";
                     echo "<td>" . $row['SSN'] ."</td>";
                     echo "<td>" . $row['name'] ."</td>";
@@ -169,29 +198,67 @@
         }
     </script>
     <!--顯示教師資料-->
+    <div class="divContent">
+        <table id="serachTable">
+            <form method="POST" action="teacher.php">
+                <tr>
+                    <td><label for="year">學年:</label></td>
+                    <td><select id="year" name="selectedYear" style="width: 100% ;height: 100%">
+                            <?php
+                            $currentYear = date('Y')-1911;
+                            $startYear = $currentYear - 5;
+                            $endYear = $currentYear + 5;
+                            for ($i = $startYear; $i <= $endYear; $i++) {
+                                $selected = '';
+                                if (isset($_POST['selectedYear']) && $_POST['selectedYear'] == $i) {
+                                    $selected = 'selected';
+                                }
+                                echo "<option value=\"$i\" $selected>$i</option>";
+                            }
+                            ?>
+                        </select></td>
+                    <td><label for="semester">學期:</label></td>
+                    <td><select id="semester" name="selectedSemester" style="width: 100% ;height: 100%">
+                            <option value="上學期" <?php if(isset($_POST['selectedSemester']) && $_POST['selectedSemester'] === '上學期') echo 'selected'; ?>>上學期</option>
+                            <option value="下學期" <?php if(isset($_POST['selectedSemester']) && $_POST['selectedSemester'] === '下學期') echo 'selected'; ?>>下學期</option>
+                        </select></td>
+                </tr>
+        </table>
+        <br>
+        <input type="hidden" name="username" value=<?php echo $account ?>>
+        <input type="submit" value="查詢" style="height: 40px ;width: 60px ;background-color: darkgoldenrod">
+        </form>
+    </div>
     <br>
     <!--課程列表-->
-    <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;width: 100%;" >
+    <div  class="divContent">
         <?php
         //查詢控制的課程id及名字
-        $sql = "SELECT courseid,Cname FROM course C,teacher T WHERE T.account='$account' AND T.SSN = C.teacherSSN";
+        $sql = "SELECT courseid AS id,Cname AS name FROM course WHERE teacherSSN='$account' AND year='$year' AND semester='$semester'";
         $result = $conn->query($sql);
-
         //顯示所控制的課程
         if (isset($result)) {
             echo "<table id='courseTable'>";
             echo "<tr><th>課程編號</th><th>課程名稱</th></tr>";
             while ($row = $result->fetch_assoc()) {
                 echo "<tr>";
-                echo "<td>" . str_pad($row['courseid'], 4, '0', STR_PAD_LEFT)  . "</td>";
+                echo "<td>" . str_pad($row['id'], 4, '0', STR_PAD_LEFT)  . "</td>";
                 //跳去課程頁面
-                echo "<td><a href='course.php?id=" . $row['courseid'] . "'>" . $row['Cname'] . "</a></td>";
+                echo '<td>';
+                echo '<form method="post" action="course.php">';
+                echo '<input type="submit" value="' . $row['name'] . '">';
+                echo '<input type="hidden" name="id" value="' . $row['id'] . '">';
+                echo '<input type="hidden" name="selectedYear" value="' . $year . '">';
+                echo '<input type="hidden" name="selectedSemester" value="' . $semester . '">';
+                echo '</form>';
                 echo "</tr>";
             }
             echo "</table>";
         }
         ?>
     </div>
+
+
 </div>
 
 

@@ -20,7 +20,9 @@
     if ($conn->connect_error) {
         die("connect fail： " . $conn->connect_error);
     }
-    $course = $_GET['id'];
+    $course = $_POST['id'];
+    $year = $_POST['selectedYear'];
+    $semester = $_POST['selectedSemester'];
     ?>
     <style>
         body {
@@ -104,7 +106,7 @@
 </head>
 <body>
 <!--返回上一頁-->
-<form action="teacher.php" method="GET">
+<form action="teacher.php" method="POST">
     <?php
     $sql = "SELECT T.account FROM teacher T,course C WHERE C.courseid='$course' AND C.teacherSSN = T.SSN ";
     $result = $conn->query($sql);
@@ -112,6 +114,8 @@
         //
         $row = $result->fetch_assoc();
         echo '<input type="hidden" name="username" value=' . $row['account'] .'>';
+        echo '<input type="hidden" name="selectedYear" value="' . $year . '">';
+        echo '<input type="hidden" name="selectedSemester" value="' . $semester . '">';
     } else {
         echo "沒有結果";
     }

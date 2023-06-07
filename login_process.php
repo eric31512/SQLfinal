@@ -47,7 +47,12 @@ if ($result_stu->num_rows == 1) {
 }
 else if ($result_tea->num_rows == 1) {// 登入成功，建立 Session
     $_SESSION['username'] = $username;
-    header("Location:teacher.php?username=" . urlencode($username));
+    echo '<form id="studentForm" method="POST" action="teacher.php">';
+    echo '<input type="hidden" name="username" value=' . $username .'>';
+    echo '<input type="hidden" name="selectedYear" value=' . $currentYear .'>';
+    echo '<input type="hidden" name="selectedSemester" value=' . $currentSemester .'>';
+    echo '</form>';
+    echo '<script>document.getElementById("studentForm").submit();</script>';
     // 跳轉到登入後的頁面
 }
 else{
