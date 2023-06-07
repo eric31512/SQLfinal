@@ -85,15 +85,17 @@
 
         .button {
             position: fixed;
-            top: 0;
-            left: 0;
+            top: 10px;
+            left: 10px;
             transition: transform 0.3s ease-in-out;
+            border: 2px solid black;
         }
 
         .logout{
             position: fixed;
-            top: 0;
-            right: 0;
+            top: 10px;
+            right: 10px;
+            border: 2px solid black;
         }
 
         table{
